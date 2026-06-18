@@ -216,70 +216,18 @@ document.getElementById('honorLightbox').addEventListener('click', function(e) {
   if (e.target === this) closeHonorLightbox();
 });
 
-// ERP API base URL — change this to your ERP server address when frontend is on a different domain
-// Example: const ERP_API_BASE = 'https://18f43930d94255.lhr.life/SunGroupERP';
-// Leave empty ('') if frontend is served behind a reverse proxy that routes /api/ to the ERP
-const ERP_API_BASE = '';
-
 // ============================================
-// Recruitment / Contact Form
+// Contact Form
 // ============================================
 function handleSubmit(e) {
   e.preventDefault();
-  const form = e.target;
   const toast = document.getElementById('toast');
-
-  // Build form data
-  var params = new URLSearchParams();
-  params.append('name', form.querySelector('[name="name"]').value);
-  params.append('phone', form.querySelector('[name="phone"]').value);
-  params.append('message', form.querySelector('[name="message"]').value);
-  params.append('jobTitle', form.querySelector('[name="jobTitle"]').value);
-  params.append('source', form.querySelector('[name="source"]').value);
-
-  var url = ERP_API_BASE + '/api/public/recruit';
-
-  fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-    body: params.toString()
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.code === 0) {
-      toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.msg;
-      toast.className = 'toast-notification show';
-      form.reset();
-    } else {
-      toast.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + data.msg;
-      toast.className = 'toast-notification show error';
-    }
-    setTimeout(function() {
-      toast.className = 'toast-notification';
-    }, 4000);
-  })
-  .catch(function(err) {
-    toast.innerHTML = '<i class="fas fa-exclamation-circle"></i> 提交失败，请稍后重试';
-    toast.className = 'toast-notification show error';
-    setTimeout(function() {
-      toast.className = 'toast-notification';
-    }, 4000);
-  });
+  toast.classList.add('show');
+  setTimeout(function() {
+    toast.classList.remove('show');
+  }, 3000);
+  e.target.reset();
 }
-
-// Job card "apply" buttons — set the hidden jobTitle field and scroll to contact form
-document.addEventListener('DOMContentLoaded', function() {
-  var applyBtns = document.querySelectorAll('.apply-btn');
-  applyBtns.forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      var job = this.getAttribute('data-job');
-      if (job) {
-        var input = document.getElementById('jobTitleInput');
-        if (input) input.value = job;
-      }
-    });
-  });
-});
 
 // ============================================
 // Back to Top
